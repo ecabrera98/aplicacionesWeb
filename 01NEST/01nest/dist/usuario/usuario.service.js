@@ -39,6 +39,19 @@ let UsuarioService = class UsuarioService {
             where: where,
         });
     }
+    buscarMuchos(parametrosBusqueda) {
+        const or = parametrosBusqueda.busqueda
+            ? {
+                OR: [{ nombre: { contains: parametrosBusqueda.busqueda } },
+                    { apellido: { contains: parametrosBusqueda.busqueda } },
+                ],
+            }
+            : {};
+        return this.prisma.ePN_USUARIO.findMany({
+            where: or, take: Number(parametrosBusqueda.take) || undefined,
+            skip: Number(parametrosBusqueda.skip) || undefined,
+        });
+    }
 };
 UsuarioService = __decorate([
     common_1.Injectable(),

@@ -7,12 +7,13 @@ import {
     InternalServerErrorException,
     Param,
     Post,
-    Put, Res
+    Put, Query, Res
 } from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
 import {Prisma} from "@prisma/client";
 import {UsuarioCrearDto} from "./dto/usuario-crear.dto";
 import {validate} from "class-validator";
+import {take} from "rxjs";
 
 // http://localhost:3001/usuario/......
 @Controller('usuario')
@@ -23,9 +24,34 @@ export class UsuarioController {
         private usuarioService: UsuarioService,
     ) {}
 
-    @Get('lista-usuarios')
-    listaUsuarios(@Res() response){
+    @Get('inicio')
+    inicio(@Res() response){
       response.render('inicio.ejs')
+    }
+
+    @Get('lista-usuarios')
+    async listaUsuarios(@Res() response, @Query() parametrosConsulta) {
+        try {
+            // validar parámetros de consulta con un dto
+            const respuesta = await this.usuarioService.buscarMuchos({
+                skip: parametrosConsulta.skip ? +parametrosConsulta.skip : undefined,
+                take: parametrosConsulta.take ? +parametrosConsulta.take : undefined,
+                busqueda: parametrosConsulta.busqueda ? parametrosConsulta.busqueda : undefined,
+            });
+            console.log(respuesta);
+            response.render('usuario/lista.ejs',{
+                datos: {
+                    usuarios: respuesta
+                },
+            });
+        } catch (error) {
+            throw new InternalServerErrorException('Error del servidor');
+        }
+    }
+
+    @Get('vista-crear')
+    vistaCrear(@Res() response){
+        response.render("usuario/crear.ejs");
     }
 
 

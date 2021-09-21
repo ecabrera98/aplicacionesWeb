@@ -39,4 +39,18 @@ export class UsuarioService {
             where: where,
         });
     }
+
+    buscarMuchos(parametrosBusqueda: {
+        skip?: number; take?: number; busqueda?: string; // orderBy?: Prisma.EPN_UsuarioOrder;
+        }) { const or = parametrosBusqueda.busqueda
+        ? {
+            OR: [ { nombre: { contains: parametrosBusqueda.busqueda } },
+                { apellido: { contains: parametrosBusqueda.busqueda } },
+            ],
+        }
+        : {};
+        return this.prisma.ePN_USUARIO.findMany({
+            where: or, take: Number(parametrosBusqueda.take) || undefined,
+            skip: Number(parametrosBusqueda.skip) || undefined, });
+    }
 }

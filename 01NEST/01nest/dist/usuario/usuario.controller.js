@@ -21,8 +21,29 @@ let UsuarioController = class UsuarioController {
     constructor(usuarioService) {
         this.usuarioService = usuarioService;
     }
-    listaUsuarios(response) {
+    inicio(response) {
         response.render('inicio.ejs');
+    }
+    async listaUsuarios(response, parametrosConsulta) {
+        try {
+            const respuesta = await this.usuarioService.buscarMuchos({
+                skip: parametrosConsulta.skip ? +parametrosConsulta.skip : undefined,
+                take: parametrosConsulta.take ? +parametrosConsulta.take : undefined,
+                busqueda: parametrosConsulta.busqueda ? parametrosConsulta.busqueda : undefined,
+            });
+            console.log(respuesta);
+            response.render('usuario/lista.ejs', {
+                datos: {
+                    usuarios: respuesta
+                },
+            });
+        }
+        catch (error) {
+            throw new common_1.InternalServerErrorException('Error del servidor');
+        }
+    }
+    vistaCrear(response) {
+        response.render("usuario/crear.ejs");
     }
     obtenerUno(parametrosRuta) {
         return this.usuarioService.buscarUno(+parametrosRuta.idUsuario);
@@ -62,12 +83,27 @@ let UsuarioController = class UsuarioController {
     }
 };
 __decorate([
-    common_1.Get('lista-usuarios'),
+    common_1.Get('inicio'),
     __param(0, common_1.Res()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
+], UsuarioController.prototype, "inicio", null);
+__decorate([
+    common_1.Get('lista-usuarios'),
+    __param(0, common_1.Res()),
+    __param(1, common_1.Query()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
 ], UsuarioController.prototype, "listaUsuarios", null);
+__decorate([
+    common_1.Get('vista-crear'),
+    __param(0, common_1.Res()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], UsuarioController.prototype, "vistaCrear", null);
 __decorate([
     common_1.Get(':idUsuario'),
     __param(0, common_1.Param()),
