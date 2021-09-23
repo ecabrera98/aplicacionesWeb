@@ -21,6 +21,31 @@ let UsuarioController = class UsuarioController {
     constructor(usuarioService) {
         this.usuarioService = usuarioService;
     }
+    async formularioCrearUsuario(response, parametrosCuerpo) {
+        try {
+            await this.usuarioService.crearUno({
+                nombre: parametrosCuerpo.nombre,
+                apellido: parametrosCuerpo.apellido,
+            });
+            response.redirect('/usuario/vista-crear'
+                + '?mensaje=Se creo el usuario ' +
+                parametrosCuerpo.nombre);
+        }
+        catch (error) {
+            console.error(error);
+            throw new common_1.InternalServerErrorException('Error creando usuario');
+        }
+    }
+    async eliminarUsuario(response, parametrosRuta) {
+        try {
+            await this.usuarioService.eliminarUno(+parametrosRuta.idUsuario);
+            response.redirect('/usuario/lista-usuarios' + '?mensaje=Se elimino al usuario');
+        }
+        catch (error) {
+            console.error(error);
+            throw new common_1.InternalServerErrorException('Error');
+        }
+    }
     inicio(response) {
         response.render('inicio.ejs');
     }
@@ -34,7 +59,8 @@ let UsuarioController = class UsuarioController {
             console.log(respuesta);
             response.render('usuario/lista.ejs', {
                 datos: {
-                    usuarios: respuesta
+                    usuarios: respuesta,
+                    mensaje: parametrosConsulta.mensaje
                 },
             });
         }
@@ -42,8 +68,12 @@ let UsuarioController = class UsuarioController {
             throw new common_1.InternalServerErrorException('Error del servidor');
         }
     }
-    vistaCrear(response) {
-        response.render("usuario/crear.ejs");
+    vistaCrear(response, parametrosConsulta) {
+        response.render('usuario/crear.ejs', {
+            datos: {
+                mensaje: parametrosConsulta.mensaje
+            }
+        });
     }
     obtenerUno(parametrosRuta) {
         return this.usuarioService.buscarUno(+parametrosRuta.idUsuario);
@@ -83,6 +113,22 @@ let UsuarioController = class UsuarioController {
     }
 };
 __decorate([
+    common_1.Post('crear-usuario-formulario'),
+    __param(0, common_1.Res()),
+    __param(1, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], UsuarioController.prototype, "formularioCrearUsuario", null);
+__decorate([
+    common_1.Post('eliminar-usuario/:idUsuario'),
+    __param(0, common_1.Res()),
+    __param(1, common_1.Param()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], UsuarioController.prototype, "eliminarUsuario", null);
+__decorate([
     common_1.Get('inicio'),
     __param(0, common_1.Res()),
     __metadata("design:type", Function),
@@ -100,8 +146,9 @@ __decorate([
 __decorate([
     common_1.Get('vista-crear'),
     __param(0, common_1.Res()),
+    __param(1, common_1.Query()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], UsuarioController.prototype, "vistaCrear", null);
 __decorate([

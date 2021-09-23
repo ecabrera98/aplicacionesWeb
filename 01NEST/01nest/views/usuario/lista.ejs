@@ -4,6 +4,12 @@
       rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
       crossorigin="anonymous">
 <div class='container'>
+    <% const existeMensaje = typeof datos.mensaje !== 'undefined'%>
+    <% if(existeMensaje){%>
+        <div class="alert alert-danger" role="alert">
+            <%= datos.mensaje%>
+        </div>
+    <%}%>
     <h1>Lista</h1>
     <form action="/usuario/lista-usuarios" method="get">
         <div class="mb-3">
@@ -41,7 +47,12 @@
                 <th><%= objeto.id %></th>
                 <th><%= objeto.nombre%></th>
                 <th><%= objeto.apellido%></th>
-                <th><button class='btn btn-danger'>Eliminar</button> </th>
+                <th>
+                    <form   action='/usuario/eliminar-usuario/<%= objeto.id %>'
+                            method='post'>
+                        <button class='btn btn-danger'>Eliminar</button>
+                    </form>
+                </th>
             </tr>
         <% } ) %>
         </tbody>

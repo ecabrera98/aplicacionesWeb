@@ -34,9 +34,15 @@ export class UsuarioService {
         });
     }
 
-    eliminarUno(where: Prisma.EPN_USUARIOWhereUniqueInput) {
+    // eliminarUno(where: Prisma.EPN_USUARIOWhereUniqueInput) {
+    //     return this.prisma.ePN_USUARIO.delete({
+    //         where: where,
+    //     });
+    // }
+
+    eliminarUno(id: number) {
         return this.prisma.ePN_USUARIO.delete({
-            where: where,
+            where: { id: id },
         });
     }
 

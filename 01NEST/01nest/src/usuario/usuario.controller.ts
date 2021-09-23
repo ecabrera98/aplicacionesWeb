@@ -24,6 +24,57 @@ export class UsuarioController {
         private usuarioService: UsuarioService,
     ) {}
 
+    // @Post('crear-usuario-formulario')
+    // async formularioCrearUsuario(
+    //     @Res() response,
+    //     @Body() parametrosCuerpo
+    // ){
+    //     try{
+    //         const respuestaUsuario = await this.usuarioService.crearUno({
+    //             nombre: parametrosCuerpo.nombre,
+    //             apellido: parametrosCuerpo.apellido,
+    //         });
+    //         //return respuestaUsuario;
+    //         response.send(respuestaUsuario)
+    //
+    //     }catch (error) {
+    //         console.error(error);
+    //         throw new InternalServerErrorException('Error creando usuario')
+    //     }
+    // }
+
+    @Post('crear-usuario-formulario')
+    async formularioCrearUsuario(
+        @Res() response,
+        @Body() parametrosCuerpo
+    ){
+        try{
+            await this.usuarioService.crearUno({
+                nombre: parametrosCuerpo.nombre,
+                apellido: parametrosCuerpo.apellido,
+            });
+            response.redirect('/usuario/vista-crear'
+            +'?mensaje=Se creo el usuario '+
+            parametrosCuerpo.nombre);
+
+        }catch (error) {
+            console.error(error);
+            throw new InternalServerErrorException('Error creando usuario')
+        }
+    }
+
+    @Post('eliminar-usuario/:idUsuario')
+    async eliminarUsuario(@Res() response, @Param() parametrosRuta) {
+        try {
+            await this.usuarioService.eliminarUno(+parametrosRuta.idUsuario);
+            response.redirect(
+                '/usuario/lista-usuarios' + '?mensaje=Se elimino al usuario');
+        } catch (error) {
+            console.error(error);
+            throw new InternalServerErrorException('Error');
+        }
+    }
+    
     @Get('inicio')
     inicio(@Res() response){
       response.render('inicio.ejs')
@@ -41,7 +92,8 @@ export class UsuarioController {
             console.log(respuesta);
             response.render('usuario/lista.ejs',{
                 datos: {
-                    usuarios: respuesta
+                    usuarios: respuesta,
+                    mensaje: parametrosConsulta.mensaje
                 },
             });
         } catch (error) {
@@ -49,11 +101,19 @@ export class UsuarioController {
         }
     }
 
-    @Get('vista-crear')
-    vistaCrear(@Res() response){
-        response.render("usuario/crear.ejs");
-    }
+    // @Get('vista-crear')
+    // vistaCrear(@Res() response){
+    //     response.render("usuario/crear.ejs");
+    // }
 
+    @Get ('vista-crear')
+    vistaCrear(@Res() response, @Query() parametrosConsulta){
+        response.render('usuario/crear.ejs', {
+            datos: {
+                mensaje: parametrosConsulta.mensaje
+            }
+        })
+    }
 
     @Get(':idUsuario')
     obtenerUno(@Param() parametrosRuta) {

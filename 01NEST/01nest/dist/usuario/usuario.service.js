@@ -34,9 +34,9 @@ let UsuarioService = class UsuarioService {
             where: parametrosActualizar.where,
         });
     }
-    eliminarUno(where) {
+    eliminarUno(id) {
         return this.prisma.ePN_USUARIO.delete({
-            where: where,
+            where: { id: id },
         });
     }
     buscarMuchos(parametrosBusqueda) {
