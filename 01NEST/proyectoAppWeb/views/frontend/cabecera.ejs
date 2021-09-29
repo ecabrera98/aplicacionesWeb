@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang='en'>
+<head>
+    <meta charset="UTF-8">
+    <title>Proyecto APP WEB</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+          rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+          crossorigin="anonymous">
+    <style>
+    #menu-bar{
+    display: none;
+    }
+
+    header label{
+    float: right;
+    font-size: 28px;
+    margin: 6px 0;
+    cursor: pointer;
+    }
+
+    .menu{
+    position: absolute;
+    top: 50px;
+    left: 0;
+
+    width: 100%;
+    height: 100vh;
+    background: #066ec4;
+
+    transition: all .5s;
+    transform: translateX(-100%);
+    }
+
+    .menu a{
+    display: block;
+    color: #fff;
+    height: 50px;
+    text-decoration: none;
+    padding: 15px;
+    border: 1px solid #fff;
+    }
+
+
+    .menu a:hover{
+    background: rgba(255,255,255,.3);
+    }
+
+
+    #menu-bar:checked ~.menu{
+    transform: translateX(0%);
+    }
+
+    /*-----------Responsive-----------*/
+
+    /*Dispositivo Movil*/
+    @media(min-width: 420px){
+    .menu{
+    background:rgba(51,51,51,.9);
+    width: 100%;
+    height: auto;
+    }
+
+    }
+
+    /*Tablets*/
+    @media(min-width: 768px){
+    .menu{
+    background:rgba(51,51,51,.9);
+    width: 100%;
+    height: auto;
+    }
+    }
+
+    /*Escritorio*/
+    @media(min-width: 1024px){
+    .menu{
+    position: static;
+    width: auto;
+    height: auto;
+    transform: translateX(0%);
+    float: right;
+    display: flex;
+    background:#066ec4;
+    }
+
+    .menu a{
+    border: none;
+    }
+
+    header label{
+    display: none;
+    }
+
+    }
+
+    *{
+        margin: 0;
+        padding:0;
+        box-sizing: border-box;
+    }
+
+
+    body{
+        font-family: 'Poppins', sans-serif;
+    }
+
+    header{
+        width: 100%;
+        height: 50px;
+        background: #066ec4;
+        color: #fff;
+
+        position: fixed;
+        top: 0;
+        left:0;
+        z-index: 100;
+    }
+
+    .contenedor{
+        width: 98%;
+        margin:auto;
+    }
+
+    h1{
+        float: left;
+    }
+
+    header .contenedor{
+        display: table;
+    }
+
+
+
+    /*--------parte 2------*/
+    section{
+        width: 100%;
+        margin-top: 25px;
+    }
+
+
+    /*Escritorio*/
+    @media(min-width: 1024px){
+        .contenedor{
+            width: 1000px;
+        }
+
+    }
+
+    </style>
+</head>
+<body>
+<header>
+    <div class="contenedor">
+        <h1 class="icon-guidedog">ECAR GAMES</h1>
+        <input type="checkbox" id="menu-bar">
+        <nav class="menu">
+            <a href="/videojuegos/inicio">Inicio</a>
+            <a href="/videojuegos/lista-vid">Videojuegos</a>
+            <a class="nav-link disabled" style="color:#FF0000">Contacto</a>
+        </nav>
+    </div>
+</header>

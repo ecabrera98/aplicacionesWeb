@@ -8,25 +8,54 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VideojuegosService = void 0;
 const common_1 = require("@nestjs/common");
-const typeorm_1 = require("@nestjs/typeorm");
-const videojuegos_entity_1 = require("./videojuegos.entity");
-const typeorm_2 = require("typeorm");
+const prisma_service_1 = require("../prisma.service");
 let VideojuegosService = class VideojuegosService {
-    constructor(videojuegosEntity) {
-        this.videojuegosEntity = videojuegosEntity;
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
+    buscarUno(id) {
+        return this.prisma.ePN_USUARIO.findUnique({
+            where: {
+                id: id,
+            },
+        });
+    }
+    crearUno(usuario) {
+        return this.prisma.ePN_USUARIO.create({
+            data: usuario,
+        });
+    }
+    actualizarUno(parametrosActualizar) {
+        return this.prisma.ePN_USUARIO.update({
+            data: parametrosActualizar.data,
+            where: parametrosActualizar.where,
+        });
+    }
+    eliminarUno(id) {
+        return this.prisma.ePN_USUARIO.delete({
+            where: { id: id },
+        });
+    }
+    buscarMuchos(parametrosBusqueda) {
+        const or = parametrosBusqueda.busqueda
+            ? {
+                OR: [{ nombre: { contains: parametrosBusqueda.busqueda } },
+                    { apellido: { contains: parametrosBusqueda.busqueda } },
+                ],
+            }
+            : {};
+        return this.prisma.ePN_USUARIO.findMany({
+            where: or, take: Number(parametrosBusqueda.take) || undefined,
+            skip: Number(parametrosBusqueda.skip) || undefined,
+        });
     }
 };
 VideojuegosService = __decorate([
     common_1.Injectable(),
-    __param(0, typeorm_1.InjectRepository(videojuegos_entity_1.VideojuegosEntity)),
-    __metadata("design:paramtypes", [typeof (_a = typeof typeorm_2.Repository !== "undefined" && typeorm_2.Repository) === "function" ? _a : Object])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
 ], VideojuegosService);
 exports.VideojuegosService = VideojuegosService;
 //# sourceMappingURL=videojuegos.service.js.map

@@ -4,12 +4,14 @@ import { AppService } from './app.service';
 import {PrismaService} from "./prisma.service";
 import {CalculadoraModule} from "./calculadora/calculadora.module";
 import { UsuarioModule } from './usuario/usuario.module';
+import {VideojuegosModule} from "./videojuegos/videojuegos.module";
 
 //DECORADOR -> FUNCIONES
 @Module({
   imports: [ //modulos importados
       CalculadoraModule,
       UsuarioModule,
+      VideojuegosModule
   ],
   controllers: [ //controladores de este módulo
       AppController

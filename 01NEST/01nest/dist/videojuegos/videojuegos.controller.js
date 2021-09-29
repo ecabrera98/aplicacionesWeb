@@ -15,88 +15,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.VideojuegosController = void 0;
 const common_1 = require("@nestjs/common");
 const videojuegos_service_1 = require("./videojuegos.service");
-const typeorm_1 = require("typeorm");
 let VideojuegosController = class VideojuegosController {
     constructor(_videojuegosService) {
         this._videojuegosService = _videojuegosService;
     }
     crearVidView(response, parametrosCuerpo) {
-        response.render('./videojuegos/crearVid', { parametrosCuerpo: parametrosCuerpo });
+        response.render('videojuegos/crearVid.ejs', { parametrosCuerpo: parametrosCuerpo });
     }
     async crearVid(parametrosCuerpo, response) {
-        const respuesta = await this._videojuegosService.videojuegosEntity.save({
-            nombre: parametrosCuerpo.nombre,
-            anioVideojuego: parametrosCuerpo.anioVideojuego,
-            consola: parametrosCuerpo.consola,
-            genero: parametrosCuerpo.genero,
-            fkDev: parametrosCuerpo.idDev
-        });
-        response.redirect('/videojuegos/videojuegos?mensaje=Se creó el videojuego ' + parametrosCuerpo.nombre);
     }
     async obtenerVideojuegos(parametrosConsulta, response) {
-        let take = 10;
-        let skip = 0;
-        let order = 'ASC';
-        if (parametrosConsulta.busqueda) {
-            let porcent = '%';
-            let buscarFix1 = porcent.concat(parametrosConsulta.busqueda.toString());
-            const buscarFix = buscarFix1.concat(porcent);
-            parametrosConsulta.busqueda = buscarFix;
-        }
-        if (parametrosConsulta.take) {
-            take = parametrosConsulta.take;
-        }
-        if (parametrosConsulta.skip) {
-            skip = parametrosConsulta.skip;
-        }
-        if (parametrosConsulta.order) {
-            order = parametrosConsulta.order;
-        }
-        if (parametrosConsulta.pag) {
-            if (parametrosConsulta.pag > 1) {
-                skip = (parseInt(parametrosConsulta.pag) * 10) - 10;
-            }
-        }
-        let consultaWhereOR = [
-            {
-                fkDev: typeorm_1.Like(parametrosConsulta.idDev ? parametrosConsulta.idDev : '%%'),
-                nombre: typeorm_1.Like(parametrosConsulta.busqueda ? parametrosConsulta.busqueda : '%%'),
-            },
-            {
-                fkDev: typeorm_1.Like(parametrosConsulta.idDev ? parametrosConsulta.idDev : '%%'),
-                anioVideojuego: typeorm_1.Like(parametrosConsulta.busqueda ? parametrosConsulta.busqueda : '%%'),
-            }
-        ];
-        let consulta = {
-            where: consultaWhereOR,
-            take: take,
-            skip: skip,
-            order: {
-                idVid: order === 'ASC' ? 'ASC' : 'DESC',
-            }
-        };
-        let datos = await this._videojuegosService.videojuegosEntity.findAndCount(consulta);
-        response.render('./videojuegos/homeVideojuegos', {
-            datos: datos,
-            parametrosConsulta: parametrosConsulta
-        });
     }
     async borrarVid(response, parametrosConsulta) {
-        const respuesta = await this._videojuegosService.videojuegosEntity.delete(parametrosConsulta.idVid);
-        response.redirect('/videojuegos/videojuegos?mensaje=Se eliminó el registro satisfactoriamente');
     }
     async modificarVid(response, parametrosConsulta) {
-        response.render('videojuegos/modificarVid', { parametrosConsulta: parametrosConsulta });
+        response.render('videojuegos/modificarVid.ejs', { parametrosConsulta: parametrosConsulta });
     }
     async modificarVidPost(parametrosCuerpo, response) {
-        const respuesta = await this._videojuegosService.videojuegosEntity.update({ idVid: parametrosCuerpo.idVid }, {
-            nombre: parametrosCuerpo.nombre,
-            anioVideojuego: parametrosCuerpo.anioVideojuego,
-            consola: parametrosCuerpo.consola,
-            genero: parametrosCuerpo.genero,
-            fkDev: parametrosCuerpo.fkDev
-        });
-        response.redirect('/videojuegos/videojuegos?mensaje=Se modificó el videojuego: ' + parametrosCuerpo.nombre + ' idforanea :' + parametrosCuerpo.fkDev);
     }
 };
 __decorate([

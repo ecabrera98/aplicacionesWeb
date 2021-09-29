@@ -13,6 +13,7 @@ const app_service_1 = require("./app.service");
 const prisma_service_1 = require("./prisma.service");
 const calculadora_module_1 = require("./calculadora/calculadora.module");
 const usuario_module_1 = require("./usuario/usuario.module");
+const videojuegos_module_1 = require("./videojuegos/videojuegos.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -20,6 +21,7 @@ AppModule = __decorate([
         imports: [
             calculadora_module_1.CalculadoraModule,
             usuario_module_1.UsuarioModule,
+            videojuegos_module_1.VideojuegosModule
         ],
         controllers: [
             app_controller_1.AppController

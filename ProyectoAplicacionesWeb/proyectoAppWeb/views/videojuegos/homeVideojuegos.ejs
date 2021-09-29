@@ -1,0 +1,129 @@
+<%- include('../frontend/cabecera')%>
+    <style>
+        h1 {
+            width: 100%;
+            text-align: center;
+        }
+
+        table {
+            align-self: center;
+            width: 90%;
+            border: 1px solid #000;
+            margin-left: 30px;
+            margin-right: auto;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+
+        th,
+        td {
+            width: 25%;
+            text-align: center;
+            vertical-align: top;
+            border: 1px solid #000;
+            border-collapse: collapse;
+            padding: 0.3em;
+            caption-side: bottom;
+            background: rgb(200, 229, 224);
+        }
+
+        caption {
+            padding: 0.3em;
+            color: #fff;
+            background: #000;
+        }
+
+        body {
+            background-color: rgb(247, 238, 245);
+        }
+
+
+        ul.pagination li {
+            display: inline;
+        }
+
+        ul.pagination li a {
+            color: black;
+            float: left;
+            padding: 8px 16px;
+        }
+    </style>
+
+<main>
+<h1>Bienvenido a la página de videojuegos</h1>
+
+<div class='container'>
+
+    <h1>Videojuegos</h1>
+    <% const existeVid = typeof datos.mensaje !== 'undefined' %>
+    <%  if(existeVid) { %>
+        <div class="alert alert-success" role="alert">
+            <%= datos.mensaje %>
+        </div>
+    <%} %>
+
+    <form   action="/videojuegos/lista-vid" method="get">
+        <div class="mb-3">
+            <label for="busqueda" class="form-label"> Busqueda </label>
+            <input placeholder="Ejmemplo: Minecraft/Markus Persson"
+                   type="text"
+                   name="busqueda"
+                   class="form-control"
+                   id="busqueda"
+                   aria-describedby="ayudaBusqueda">
+            <div id="ayudaBusqueda" class="form-text"> Puede buscar sus videojuegos por Nombre o por Creador.
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+
+    <br>
+    <div>
+        <a href="/videojuegos/crear-vid">
+            <button class="btn btn-success" >
+                Agregar nuevo Videojuego
+            </button>
+        </a>
+    </div>
+    <br>
+
+    <table class="table text-center">
+        <thead>
+        <tr> <th scope="col">IdVideojuego</th>
+            <th scope="col">Creador</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Fecha de Lanzamiento</th>
+            <th scope="col">Disponibilidad</th>
+            <th scope="col">Costo</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% datos.videojuegos.forEach((objeto) =>{%>
+            <tr>
+                <th> <%= objeto.id %> </th>
+                <th> <%= objeto.creador %> </th>
+                <th> <%= objeto.nombre %> </th>
+                <th> <%= objeto.fechaLanzamiento.getDay() + "/"
+                    + objeto.fechaLanzamiento.getMonth() + "/"
+                    + objeto.fechaLanzamiento.getFullYear()%> </th>
+                <th> <%= objeto.disponibilidad %> </th>
+                <th> <%= "$" %> <%= objeto.costo %> </th>
+                <th>
+                    <form action="/videojuegos/vista-actualizar/<%=objeto.id %>" method="post">
+                        <button class="btn btn-warning"> Actualizar  </button>
+                    </form>
+                </th>
+                <th>
+                    <form action="/videojuegos/eliminar-vid/<%=objeto.id %>" method="post">
+                        <button class="btn btn-danger"> Eliminar </button>
+                    </form>
+                </th>
+            </tr>
+        <% } ) %>
+        </tbody>
+    </table>
+</div>
+
+</main>
+
+<%- include('../frontend/cabecera')%>
