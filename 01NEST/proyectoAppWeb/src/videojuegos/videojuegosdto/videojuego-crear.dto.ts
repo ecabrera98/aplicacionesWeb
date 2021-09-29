@@ -9,13 +9,13 @@ import {
 export class VideojuegoCrearDto {
     @IsNotEmpty()
     @IsString()
-    @MinLength(5)
+    @MinLength(4)
     @MaxLength(50)
     creador: string;
 
     @IsNotEmpty()
     @IsString()
-    @MinLength(5)
+    @MinLength(4)
     @MaxLength(50)
     nombre: string;
 
@@ -26,7 +26,6 @@ export class VideojuegoCrearDto {
     @IsOptional()
     @IsBoolean()
     @IsIn([true,false])
-    @IsNumber()
    disponibilidad : boolean;
 
 

@@ -72,9 +72,11 @@
                 </td>
                 <td>
                     <%if(datos.videojuego.disponibilidad === true){%>
-                        <label><input type="checkbox" id="cartelera" name="cartelera" checked="checked"> DISPONIBLE</label>
+                        <label hidden="true" for="disponibilidad" DISPONIBLE></label>
+                        <label><input type="checkbox" id="disponibilidad" name="disponibilidad" checked="checked">DISPONIBLE</label>
                     <%}else{%>
-                        <label><input type="checkbox" id="cartelera" name="cartelera"> DISPONIBLE</label>
+                            <label hidden="true" for="disponibilidad" DISPONIBLE></label>
+                            <label><input type="checkbox" id="disponibilidad" name="disponibilidad">DISPONIBLE</label>
                     <%}%>
                 </td>
                 <td>
@@ -84,19 +86,19 @@
             </tr>
         </table>
         <br><br>
-        <div class="contenedor">
-        <button type="submit" class="btn btn-success btn-block">Actualizar</button>
+        <div style="text-align: center;">
+        <button type="submit" class="btn-outline-success">Actualizar</button>
         </div>
         <br><br>
     </form>
 </div>
 <% const path = '/videojuegos/lista-vid?idDev=' + datos.videojuego.id %>
-<div class="contenedor">
+<div class="contenedor" style="text-align: center;">
 <a href="<%= path %>" method="get">
-    <button class="btn btn-primary">Cancelar</button>
+    <button class="btn-primary">Cancelar</button>
 </a>
 </div>
 
 </body>
 
-<%- include('../frontend/cabecera')%>
+<%- include('../frontend/footer')%>

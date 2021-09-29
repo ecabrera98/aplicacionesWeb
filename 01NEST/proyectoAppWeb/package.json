@@ -25,6 +25,8 @@
     "@nestjs/core": "^8.0.0",
     "@nestjs/platform-express": "^8.0.0",
     "@prisma/client": "^3.0.2",
+    "bootstrap": "^5.1.1",
+    "bootstrap.min.js": "^3.3.5",
     "class-validator": "^0.13.1",
     "cookie-parser": "^1.4.5",
     "css": "^3.0.0",

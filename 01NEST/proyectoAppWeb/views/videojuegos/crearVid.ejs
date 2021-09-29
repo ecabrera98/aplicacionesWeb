@@ -74,12 +74,28 @@
             </tr>
         </table>
         <br><br>
-        <div class="contenedor">
-            <button type="submit" class="btn btn-success btn-block">Crear</button>
-            <button type="reset" class="btn btn-primary">Reset</button>
+        <div class="contenedor" style="text-align: center;" >
+            <button type="submit" class="btn-success btn-block" style="position: absolute;top: 30%;height:25px; width:100px">Crear</button>
+            <button type="reset" class="btn-primary" style="height:25px; width:100px">Reset</button>
         </div>
     </form>
+    <% const existeVid = typeof datos.mensaje !== 'undefined' %>
+    <%  if(existeVid) { %>
+        <div class="alert alert-warning alert-dismissible" id="myAlert">
+            <%= datos.mensaje %>
+            <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">&times;</button>
+        </div>
+    <%} %>
+    <br>
 </div>
 </div>
 </main>
-<%- include('../frontend/cabecera')%>
+
+<script>
+    $(document).ready(function(){
+        $(".close").click(function(){
+            $("#myAlert").alert("close");
+        });
+    });
+</script>
+<%- include('../frontend/footer')%>

@@ -22,47 +22,7 @@ let VideojuegosController = class VideojuegosController {
     constructor(videojuegosService) {
         this.videojuegosService = videojuegosService;
     }
-    async formularioCrearUsuario(response, parametrosCuerpo) {
-        try {
-            await this.videojuegosService.crearUno({
-                creador: parametrosCuerpo.creador,
-                nombre: parametrosCuerpo.nombre,
-                fechaLanzamiento: new Date(parametrosCuerpo.fechaLanzamiento),
-                disponibilidad: !!(parametrosCuerpo.disponibilidad),
-                costo: +parametrosCuerpo.costo
-            });
-            response.redirect('/videojuegos/lista-vid'
-                + '?mensaje=Se creo el videojuego ' +
-                parametrosCuerpo.nombre);
-        }
-        catch (error) {
-            console.error(error);
-            throw new common_1.InternalServerErrorException('Error creando usuario');
-        }
-    }
-    inicio(response) {
-        response.render('inicio.ejs');
-    }
-    crearVidView(response, parametrosCuerpo) {
-        response.render('videojuegos/crearVid.ejs', {
-            datos: {
-                mensaje: parametrosCuerpo.mensaje
-            }
-        });
-    }
-    async eliminarVideojuegos(response, parametrosRuta) {
-        try {
-            await this.videojuegosService.eliminarUno(+parametrosRuta.idVideojuego);
-            response.redirect('/videojuegos/lista-vid' + '?mensaje= Se eliminó el videojuego '
-                +
-                    parametrosRuta.idVideojuego);
-        }
-        catch (error) {
-            console.log(error);
-            throw new common_1.InternalServerErrorException('Error');
-        }
-    }
-    async CrearUno(parametrosCuerpo) {
+    async crearUno(response, parametrosCuerpo) {
         const videojuegoCrearDTO = new videojuego_crear_dto_1.VideojuegoCrearDto();
         videojuegoCrearDTO.creador = parametrosCuerpo.creador;
         videojuegoCrearDTO.nombre = parametrosCuerpo.nombre;
@@ -72,17 +32,49 @@ let VideojuegosController = class VideojuegosController {
         try {
             const errores = await class_validator_1.validate(videojuegoCrearDTO);
             if (errores.length > 0) {
-                console.log(JSON.stringify(errores));
-                throw new common_1.BadRequestException('No envia bien los parametross');
+                response.redirect('/videojuegos/crear-vid' +
+                    '?mensaje=Error al crear el videojuego, parámetros no válidos ');
+                throw new common_1.BadRequestException('No envía bien parametros');
             }
             else {
-                return this.videojuegosService.crearUno(videojuegoCrearDTO);
+                response.redirect('/videojuegos/lista-vid' +
+                    '?mensaje=Se creó el videojuego ' +
+                    videojuegoCrearDTO.nombre
+                    + ' exitosamente');
+                return this.videojuegosService.crearUno({
+                    creador: videojuegoCrearDTO.creador,
+                    nombre: videojuegoCrearDTO.nombre,
+                    fechaLanzamiento: new Date(videojuegoCrearDTO.fechaLanzamiento),
+                    disponibilidad: !!(videojuegoCrearDTO.disponibilidad),
+                    costo: +videojuegoCrearDTO.costo
+                });
             }
         }
         catch (error) {
             console.error({ error: error, mensaje: 'Errores en crear videojuego' });
             throw new common_1.InternalServerErrorException('error de servidor');
         }
+    }
+    async eliminarVideojuegos(response, parametrosRuta) {
+        try {
+            await this.videojuegosService.eliminarUno(+parametrosRuta.idVideojuego);
+            response.redirect('/videojuegos/lista-vid' + '?mensaje= Se eliminó el videojuego ' + '' +
+                parametrosRuta.idVideojuego);
+        }
+        catch (error) {
+            console.log(error);
+            throw new common_1.InternalServerErrorException('Error');
+        }
+    }
+    crearVidView(response, parametrosCuerpo) {
+        response.render('videojuegos/crearVid.ejs', {
+            datos: {
+                mensaje: parametrosCuerpo.mensaje
+            }
+        });
+    }
+    inicio(response) {
+        response.render('inicio.ejs');
     }
     async listaVid(responses, parametrosConsulta) {
         try {
@@ -102,9 +94,6 @@ let VideojuegosController = class VideojuegosController {
         catch (error) {
             throw new common_1.InternalServerErrorException(error);
         }
-    }
-    obtenerUno(parametroRuta) {
-        return this.videojuegosService.buscarUno(+parametroRuta.idVideojuego);
     }
     async vistaActualizar(response, parametrosRuta) {
         try {
@@ -130,7 +119,7 @@ let VideojuegosController = class VideojuegosController {
             const errores = await class_validator_1.validate(videojuego);
             if (errores.length > 0) {
                 console.error('Error', errores);
-                return response.redirect('/videojuegos/lista-vid/' + '?error=Error validando datos');
+                return response.redirect('/videojuegos/lista-vid/' + '?mensaje=Error validando datos');
             }
             else {
                 await this.videojuegosService.actualizarUno({
@@ -138,15 +127,18 @@ let VideojuegosController = class VideojuegosController {
                     data: videojuego,
                 });
                 response.redirect('/videojuegos/lista-vid' +
-                    '?mensaje= Se actualizó el videojuego' +
+                    '?mensaje= Se actualizó el videojuego ' +
                     '' +
-                    parametrosCuerpo.nombre + 'exitosamente');
+                    parametrosCuerpo.nombre + ' ' + ' exitosamente');
             }
         }
         catch (e) {
             console.error({ error: e, mensaje: 'Errores en editar videojuego' });
             throw new common_1.InternalServerErrorException('error de servidor');
         }
+    }
+    obtenerUno(parametroRuta) {
+        return this.videojuegosService.buscarUno(+parametroRuta.idVideojuego);
     }
 };
 __decorate([
@@ -156,22 +148,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
-], VideojuegosController.prototype, "formularioCrearUsuario", null);
-__decorate([
-    common_1.Get('inicio'),
-    __param(0, common_1.Res()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], VideojuegosController.prototype, "inicio", null);
-__decorate([
-    common_1.Get('crear-vid'),
-    __param(0, common_1.Res()),
-    __param(1, common_1.Query()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", void 0)
-], VideojuegosController.prototype, "crearVidView", null);
+], VideojuegosController.prototype, "crearUno", null);
 __decorate([
     common_1.Post('eliminar-vid/:idVideojuego'),
     __param(0, common_1.Res()),
@@ -181,12 +158,20 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], VideojuegosController.prototype, "eliminarVideojuegos", null);
 __decorate([
-    common_1.Post(),
-    __param(0, common_1.Body()),
+    common_1.Get('crear-vid'),
+    __param(0, common_1.Res()),
+    __param(1, common_1.Query()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", void 0)
+], VideojuegosController.prototype, "crearVidView", null);
+__decorate([
+    common_1.Get('inicio'),
+    __param(0, common_1.Res()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], VideojuegosController.prototype, "CrearUno", null);
+    __metadata("design:returntype", void 0)
+], VideojuegosController.prototype, "inicio", null);
 __decorate([
     common_1.Get('lista-vid'),
     __param(0, common_1.Res()),
@@ -195,13 +180,6 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], VideojuegosController.prototype, "listaVid", null);
-__decorate([
-    common_1.Get(':idVideojuego'),
-    __param(0, common_1.Param()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], VideojuegosController.prototype, "obtenerUno", null);
 __decorate([
     common_1.Post('vista-actualizar/:idVideojuego'),
     __param(0, common_1.Res()),
@@ -219,6 +197,13 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object, Object]),
     __metadata("design:returntype", Promise)
 ], VideojuegosController.prototype, "actualizarVideojuego", null);
+__decorate([
+    common_1.Get(':idVideojuego'),
+    __param(0, common_1.Param()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], VideojuegosController.prototype, "obtenerUno", null);
 VideojuegosController = __decorate([
     common_1.Controller('videojuegos'),
     __metadata("design:paramtypes", [videojuegos_service_1.VideojuegosService])

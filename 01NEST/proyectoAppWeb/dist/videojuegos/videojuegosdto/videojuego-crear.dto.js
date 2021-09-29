@@ -16,14 +16,14 @@ class VideojuegoCrearDto {
 __decorate([
     class_validator_1.IsNotEmpty(),
     class_validator_1.IsString(),
-    class_validator_1.MinLength(5),
+    class_validator_1.MinLength(4),
     class_validator_1.MaxLength(50),
     __metadata("design:type", String)
 ], VideojuegoCrearDto.prototype, "creador", void 0);
 __decorate([
     class_validator_1.IsNotEmpty(),
     class_validator_1.IsString(),
-    class_validator_1.MinLength(5),
+    class_validator_1.MinLength(4),
     class_validator_1.MaxLength(50),
     __metadata("design:type", String)
 ], VideojuegoCrearDto.prototype, "nombre", void 0);
@@ -36,7 +36,6 @@ __decorate([
     class_validator_1.IsOptional(),
     class_validator_1.IsBoolean(),
     class_validator_1.IsIn([true, false]),
-    class_validator_1.IsNumber(),
     __metadata("design:type", Boolean)
 ], VideojuegoCrearDto.prototype, "disponibilidad", void 0);
 __decorate([

@@ -22,32 +22,63 @@ export class VideojuegosController {
     ) {
     }
 
-
     @Post('crear-vid-formulario')
-    async formularioCrearUsuario(
+    async crearUno(
         @Res() response,
         @Body() parametrosCuerpo
     ){
-        try{
-            await this.videojuegosService.crearUno({
-                creador: parametrosCuerpo.creador,
-                nombre: parametrosCuerpo.nombre,
-                fechaLanzamiento:  new Date(parametrosCuerpo.fechaLanzamiento),
-                disponibilidad: !!(parametrosCuerpo.disponibilidad),
-                costo: +parametrosCuerpo.costo
-            });
-            response.redirect('/videojuegos/lista-vid'
-                +'?mensaje=Se creo el videojuego '+
-                parametrosCuerpo.nombre);
+        const videojuegoCrearDTO = new VideojuegoCrearDto();
+        videojuegoCrearDTO.creador = parametrosCuerpo.creador;
+        videojuegoCrearDTO.nombre = parametrosCuerpo.nombre;
+        videojuegoCrearDTO.fechaLanzamiento = new Date(parametrosCuerpo.fechaLanzamiento);
+        videojuegoCrearDTO.disponibilidad = !!(parametrosCuerpo.disponibilidad);
+        videojuegoCrearDTO.costo = +parametrosCuerpo.costo;
 
-        }catch (error) {
-            console.error(error);
-            throw new InternalServerErrorException('Error creando usuario')
+        try{
+            const errores = await validate(videojuegoCrearDTO);
+            if(errores.length>0){
+                response.redirect(
+                    '/videojuegos/crear-vid' +
+                    '?mensaje=Error al crear el videojuego, parámetros no válidos ');
+                throw new BadRequestException('No envía bien parametros');
+            }
+            else{
+                response.redirect(
+                    '/videojuegos/lista-vid' +
+                    '?mensaje=Se creó el videojuego ' +
+                    videojuegoCrearDTO.nombre
+                +' exitosamente');
+                return this.videojuegosService.crearUno(
+                    {
+                        creador: videojuegoCrearDTO.creador,
+                        nombre: videojuegoCrearDTO.nombre,
+                        fechaLanzamiento: new Date(videojuegoCrearDTO.fechaLanzamiento),
+                        disponibilidad: !!(videojuegoCrearDTO.disponibilidad),
+                        costo: +videojuegoCrearDTO.costo
+                    }
+                );
+            }
+
+        }catch (error){
+            console.error({error: error, mensaje: 'Errores en crear videojuego'});
+            throw new InternalServerErrorException('error de servidor');
         }
     }
-    @Get('inicio')
-    inicio(@Res() response){
-        response.render('inicio.ejs')
+
+
+    @Post('eliminar-vid/:idVideojuego')
+    async eliminarVideojuegos(@Res() response, @Param() parametrosRuta){
+        try {
+            await this.videojuegosService.eliminarUno(+parametrosRuta.idVideojuego);
+            response.redirect(
+                '/videojuegos/lista-vid' + '?mensaje= Se eliminó el videojuego '+''+
+                parametrosRuta.idVideojuego
+            );
+        } catch (error){
+            console.log(error);
+            throw new InternalServerErrorException('Error')
+        }
+
     }
 
     @Get('crear-vid')
@@ -64,51 +95,12 @@ export class VideojuegosController {
         });
     }
 
-
-    @Post('eliminar-vid/:idVideojuego')
-    async eliminarVideojuegos(@Res() response, @Param() parametrosRuta){
-        try {
-            await this.videojuegosService.eliminarUno(+parametrosRuta.idVideojuego);
-            response.redirect(
-                '/videojuegos/lista-vid' + '?mensaje= Se eliminó el videojuego '
-                +
-                parametrosRuta.idVideojuego
-            );
-        } catch (error){
-            console.log(error);
-            throw new InternalServerErrorException('Error')
-        }
-
+    @Get('inicio')
+    inicio(@Res() response){
+        response.render('inicio.ejs')
     }
 
 
-
-    @Post()
-    async CrearUno(
-        @Body() parametrosCuerpo
-    ){
-        const videojuegoCrearDTO = new VideojuegoCrearDto();
-        videojuegoCrearDTO.creador = parametrosCuerpo.creador;
-        videojuegoCrearDTO.nombre = parametrosCuerpo.nombre;
-        videojuegoCrearDTO.fechaLanzamiento = new Date(parametrosCuerpo.fechaLanzamiento);
-        videojuegoCrearDTO.disponibilidad = !!(parametrosCuerpo.disponibilidad);
-        videojuegoCrearDTO.costo = +parametrosCuerpo.costo;
-
-        try{
-            const errores = await validate(videojuegoCrearDTO);
-            if(errores.length>0){
-                console.log(JSON.stringify(errores));
-                throw new BadRequestException('No envia bien los parametross');
-            }
-            else{
-                return this.videojuegosService.crearUno(videojuegoCrearDTO);
-            }
-
-        }catch (error){
-            console.error({error: error, mensaje: 'Errores en crear videojuego'});
-            throw new InternalServerErrorException('error de servidor');
-        }
-    }
     @Get('lista-vid')
     async listaVid(
         @Res() responses,
@@ -132,12 +124,6 @@ export class VideojuegosController {
         }
 
     }
-
-    @Get(':idVideojuego')
-    obtenerUno(@Param() parametroRuta) {
-        return this.videojuegosService.buscarUno(+parametroRuta.idVideojuego);
-    }
-
 
 
 
@@ -174,7 +160,7 @@ export class VideojuegosController {
             if (errores.length > 0) {
                 console.error('Error', errores);
                 return response.redirect(
-                    '/videojuegos/lista-vid/' + '?error=Error validando datos')
+                    '/videojuegos/lista-vid/' + '?mensaje=Error validando datos')
             } else {
                 await this.videojuegosService.actualizarUno({
                     id: Number(parametrosRuta.idVideojuego),
@@ -182,9 +168,9 @@ export class VideojuegosController {
                 });
                 response.redirect(
                     '/videojuegos/lista-vid' +
-                    '?mensaje= Se actualizó el videojuego' +
+                    '?mensaje= Se actualizó el videojuego ' +
                     ''+
-                    parametrosCuerpo.nombre + 'exitosamente',
+                    parametrosCuerpo.nombre + ' '+' exitosamente',
                 );
 
             }
@@ -193,6 +179,12 @@ export class VideojuegosController {
             throw new InternalServerErrorException('error de servidor');
         }
 
+    }
+
+
+    @Get(':idVideojuego')
+    obtenerUno(@Param() parametroRuta) {
+        return this.videojuegosService.buscarUno(+parametroRuta.idVideojuego);
     }
 
 }
