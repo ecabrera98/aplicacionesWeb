@@ -1,0 +1,11 @@
+TK$mquYiR#R4y6p7goze1liy
+
+
+
+
+Se van a crear al menos 10 productos dentro de la tienda nuevos que deben de ser copiados de la tienda electrónica seleccionada EJ: Fybeca.
+	
+Se van a crear las páginas estáticas: Inicio, Mision, Vision, FAQ, Contáctanos, Shop, Cart, My Account. La información de estas páginas debe de estar basada en la información de la tienda electrónica seleccionada. EJ: Fybeca
+
+
+TKmquYiR4y6p
